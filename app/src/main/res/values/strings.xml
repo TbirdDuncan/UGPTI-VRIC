@@ -1,24 +1,3 @@
 <resources>
-    <string name="app_name">VRIC</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
-    <string name="selected_item">Selected: </string>
-    <string-array name="stateDropdown">
-        <item>ND</item>
-        <item>NY</item>
-        <item>AL</item>
-        <item>ID</item>
-        <item>WA</item>
-        <item>AZ</item>
-        <item>AK</item>
-        <item>IL</item>
-    </string-array>
-    <string-array name="counties">
-        <item>Cass</item>
-        <item>Mclean</item>
-        <item>Griggs</item>
-        <item>Steele</item>
-        <item>Clay</item>
-    </string-array>
+    <string name="app_name">Camera</string>
 </resources>

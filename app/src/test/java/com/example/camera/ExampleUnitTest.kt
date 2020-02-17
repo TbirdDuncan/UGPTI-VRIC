@@ -1,4 +1,4 @@
-package com.example.vric
+package com.example.camera
 
 import org.junit.Test
 
