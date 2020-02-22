@@ -1,4 +1,4 @@
-package com.example.vric
+package com.example.navigationexample
 
 import org.junit.Test
 

@@ -1,2 +1,2 @@
 include ':app'
-rootProject.name='VRIC'
+rootProject.name='Navigation Example'
