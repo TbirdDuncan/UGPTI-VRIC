@@ -1,4 +1,4 @@
-package com.example.nav.ui.home
+package com.example.nav.ui.setting
 
 
 
@@ -33,40 +33,20 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 
 
-
-import androidx.lifecycle.Observer
-
-
-
-import androidx.lifecycle.ViewModelProviders
-
-
-
 import com.example.nav.R
 
 
-
-import kotlinx.android.synthetic.main.fragment_home.*
-
-
-
 import android.widget.ArrayAdapter
+import kotlinx.android.synthetic.main.fragment_setting.*
+import org.w3c.dom.Text
+
+
+class SettingsFragment : Fragment() {
 
 
 
 
 
-
-
-class HomeFragment : Fragment() {
-
-
-
-
-
-
-
-    //private lateinit var homeViewModel: HomeViewModel
 
 
 
@@ -102,20 +82,13 @@ class HomeFragment : Fragment() {
 
 
 
-        //homeViewModel =
 
 
 
-        //ViewModelProviders.of(this).get(HomeViewModel::class.java)
-
-
-
-        val root = inflater.inflate(R.layout.fragment_home, container, false)
-
+        val root = inflater.inflate(R.layout.fragment_setting, container, false)
 
 
         val spinnerState = root.findViewById<Spinner>(R.id.spinner)
-
 
 
         val spinnerCounty = root.findViewById<Spinner>(R.id.spinner2)

@@ -1,4 +1,4 @@
-package com.example.nav.ui.dashboard
+package com.example.nav.ui.camera
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -7,62 +7,63 @@ import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.RelativeLayout
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.nav.R
-import com.example.nav.R.layout.abc_screen_content_include
+import com.example.nav.R.layout.fragment_camera
 import io.fotoapparat.Fotoapparat
 import io.fotoapparat.log.logcat
 import io.fotoapparat.log.loggers
 import io.fotoapparat.parameter.ScaleType
 import io.fotoapparat.selector.back
-import io.fotoapparat.view.CameraView
-import kotlinx.android.synthetic.main.fragment_dashboard.*
+import kotlinx.android.synthetic.main.fragment_camera.*
 import java.io.File
-import com.example.nav.R.layout.fragment_dashboard
 
 
-class DashboardFragment: Fragment() {
+class CameraFragment: Fragment() {
+    private lateinit var cameraViewModel: CameraViewModel
+    var editText: EditText? = null
+    private val STORAGE_PERMISSION_CODE = 23
 
-    private lateinit var dashboardViewModel: DashboardViewModel
     var fotoapparat: Fotoapparat? = null
-    val filename = "test.png"
-    val sd = Environment.getExternalStorageDirectory()
-    val dest = File(sd, filename)
+    //var info: String = editText.getText.toString()
+    val folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+    val myFile = File(folder, "myData1.jpg");// Filename
+
+
+    var fotoapparatState : FotoapparatState? = null
+
     val permissions = arrayOf(
         android.Manifest.permission.CAMERA,
         android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
         android.Manifest.permission.READ_EXTERNAL_STORAGE
     )
 
-    var fotoapparatState: FotoapparatState? = null
-        override fun onCreateView(
+
+    override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        dashboardViewModel =
-            ViewModelProviders.of(this).get(DashboardViewModel::class.java)
-        val root = inflater.inflate(fragment_dashboard, container, false)
-        val textView: TextView = root.findViewById(R.id.text_dashboard)
-        val relativeLayout: RelativeLayout = root.findViewById(R.id.layout_dashboard)
-        dashboardViewModel.text.observe(this, Observer {
+        cameraViewModel =
+            ViewModelProviders.of(this).get(CameraViewModel::class.java)
+        val root = inflater.inflate(fragment_camera, container, false)
+        val textView: TextView = root.findViewById(R.id.text_camera)
+        val relativeLayout: RelativeLayout = root.findViewById(R.id.layout_camera)
+        cameraViewModel.text.observe(this, Observer {
             textView.text = it
         })
-        dashboardViewModel.layout.observe(this, Observer {
+        cameraViewModel.layout.observe(this, Observer {
             relativeLayout.layoutAnimation
 
         })
-            //View(activity!!.applicationContext)
-
-
-
+        //View(activity!!.applicationContext)
 
 
         return root
@@ -72,19 +73,22 @@ class DashboardFragment: Fragment() {
         super.onStart()
         if (hasNoPermissions()) {
             requestPermission()
-        } else {
+
             createFotoapparat()
+            fotoapparatState = FotoapparatState.ON
+            fotoapparat?.start()
+
             fab_camera.setOnClickListener {
                 takePhoto()
             }
-            fotoapparat?.start()
-            fotoapparatState = FotoapparatState.ON
+            fotoapparat?.takePicture()?.saveToFile(myFile)
+
+
         }
 
 
     }
     private fun createFotoapparat() {
-        //val cameraView = findViewById<CameraView>(R.id.camera_view)
 
         fotoapparat = Fotoapparat(
             context = this.requireContext(),
@@ -103,9 +107,7 @@ class DashboardFragment: Fragment() {
         if (hasNoPermissions()) {
             requestPermission()
         } else {
-            fotoapparat
-                ?.takePicture()
-                ?.saveToFile(dest)
+
         }
     }
     private fun hasNoPermissions(): Boolean {
@@ -121,7 +123,7 @@ class DashboardFragment: Fragment() {
         ) != PackageManager.PERMISSION_GRANTED
     }
 
-    fun requestPermission() {
+    private fun requestPermission() {
         ActivityCompat.requestPermissions(this.requireActivity(), permissions, 0)
     }
 
