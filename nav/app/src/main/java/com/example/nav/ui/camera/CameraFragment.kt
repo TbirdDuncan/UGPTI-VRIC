@@ -71,10 +71,11 @@ class CameraFragment: Fragment() {
 
     override fun onStart() {
         super.onStart()
-        if (hasNoPermissions()) {
+        //if (hasNoPermissions()) {
+            createFotoapparat()
             requestPermission()
 
-            createFotoapparat()
+
             fotoapparatState = FotoapparatState.ON
             fotoapparat?.start()
 
@@ -84,7 +85,7 @@ class CameraFragment: Fragment() {
             fotoapparat?.takePicture()?.saveToFile(myFile)
 
 
-        }
+
 
 
     }

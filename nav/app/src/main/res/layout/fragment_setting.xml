@@ -8,133 +8,80 @@
         android:id="@+id/text_settings"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginRight="28dp"
+        android:text="Please select a State and County:"
         android:textAlignment="center"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/text_settings2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="132dp"
+        android:layout_marginEnd="75dp"
+        android:layout_marginRight="75dp"
+        android:text="Please select a vehicle type:"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <Spinner
-
-
 
         android:id="@+id/spinner"
-
-
-
         android:layout_width="wrap_content"
-
-
-
         android:layout_height="wrap_content"
-
-
-
         android:layout_marginStart="40dp"
-
-
-
         android:layout_marginLeft="40dp"
-
-
-
-        android:layout_marginTop="48dp"
-
-
-
-        android:layout_marginEnd="100dp"
-
-
-
-        android:layout_marginRight="100dp"
-
-
-
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginBottom="492dp"
         android:entries="@array/stateDropdown"
-
-
-
         android:spinnerMode="dropdown"
-
-
-
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
 
-
-
-        app:layout_constraintHorizontal_bias="0.0"
-
-
-
-        app:layout_constraintStart_toStartOf="parent"
-
-
-
-        app:layout_constraintTop_toBottomOf="@+id/text_help" />
-
-
-
-
-
-
+        app:layout_constraintHorizontal_bias="0.009"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Spinner
 
-
-
         android:id="@+id/spinner2"
-
-
-
         android:layout_width="wrap_content"
-
-
-
         android:layout_height="wrap_content"
-
-
-
         android:layout_marginStart="40dp"
-
-
-
         android:layout_marginLeft="40dp"
-
-
-
-        android:layout_marginTop="96dp"
-
-
-
-        android:layout_marginEnd="100dp"
-
-
-
-        android:layout_marginRight="100dp"
-
-
-
-        android:entries="@array/stateDropdown"
-
-
-
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="50dp"
+        android:entries="@array/counties"
         android:spinnerMode="dropdown"
-
-
-
+        app:layout_constraintBottom_toBottomOf="@+id/spinner"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.76"
+        app:layout_constraintStart_toStartOf="parent" />
 
+    <Spinner
 
-
-        app:layout_constraintHorizontal_bias="0.0"
-
-
-
+        android:id="@+id/spinner3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="76dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="50dp"
+        android:entries="@array/vehicle"
+        android:spinnerMode="dropdown"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.009"
         app:layout_constraintStart_toStartOf="parent"
-
-
-
-        app:layout_constraintTop_toBottomOf="@+id/text_settings" />
+        app:layout_constraintTop_toBottomOf="@+id/spinner" />
 </androidx.constraintlayout.widget.ConstraintLayout>

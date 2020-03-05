@@ -41,7 +41,7 @@
             android:layout_centerHorizontal="true"
             app:backgroundTint="@android:color/white"/>
 
-      
+
 
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -37,6 +37,7 @@ import com.example.nav.R
 
 
 import android.widget.ArrayAdapter
+import android.widget.Toast.makeText
 import kotlinx.android.synthetic.main.fragment_setting.*
 import org.w3c.dom.Text
 
@@ -92,6 +93,8 @@ class SettingsFragment : Fragment() {
 
 
         val spinnerCounty = root.findViewById<Spinner>(R.id.spinner2)
+
+        val spinnerVehicleType = root.findViewById<Spinner>(R.id.spinner3)
 
 
 
@@ -161,6 +164,40 @@ class SettingsFragment : Fragment() {
 
         }
 
+        ArrayAdapter.createFromResource(
+
+
+
+            activity!!.applicationContext,
+
+
+
+            R.array.vehicle,
+
+
+
+            android.R.layout.simple_spinner_item).also{adapter ->
+
+
+
+            // Specify the layout to use when the list of choices appears
+
+
+
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+
+
+            // Apply the adapter to the spinner
+
+
+
+            spinnerVehicleType.adapter = adapter
+
+
+
+        }
+
 
 
 
@@ -223,7 +260,7 @@ class SettingsFragment : Fragment() {
 
 
 
-                Toast.makeText(activity, type, Toast.LENGTH_LONG).show()
+                makeText(activity, type, Toast.LENGTH_LONG).show()
 
 
 
@@ -242,78 +279,103 @@ class SettingsFragment : Fragment() {
         spinnerCounty.onItemSelectedListener = object :AdapterView.OnItemSelectedListener {
 
 
-
             override fun onNothingSelected(parent: AdapterView<*>?) {
-
 
 
                 println("erreur")
 
 
-
             }
-
-
-
-
-
 
 
             override fun onItemSelected(
 
 
-
                 parent: AdapterView<*>?,
-
 
 
                 view: View?,
 
 
-
                 position: Int,
-
 
 
                 id: Long
 
 
-
             ) {
-
 
 
                 val type = parent?.getItemAtPosition(position).toString()
 
 
 
-                Toast.makeText(activity, type, Toast.LENGTH_LONG).show()
+                makeText(activity, type, Toast.LENGTH_LONG).show()
 
 
 
                 println(type)
 
 
+            }
+        }
+
+
+            spinnerVehicleType.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+
+
+                    println("erreur")
+
+
+                }
+
+
+                override fun onItemSelected(
+
+
+                    parent: AdapterView<*>?,
+
+
+                    view: View?,
+
+
+                    position: Int,
+
+
+                    id: Long
+
+
+                ) {
+
+
+                    val type = parent?.getItemAtPosition(position).toString()
+
+
+
+                    makeText(activity, type, Toast.LENGTH_LONG).show()
+
+
+
+                    println(type)
+
+
+                }
+
 
             }
 
 
-
-        }
-
+            //val textView: TextView = root.findViewById(R.id.text_home)
 
 
-        //val textView: TextView = root.findViewById(R.id.text_home)
+            //homeViewModel.text.observe(viewLifecycleOwner, Observer {
 
 
-
-        //homeViewModel.text.observe(viewLifecycleOwner, Observer {
-
-
-
-        //textView.text = it
-
-
+            //textView.text = it
 
 
 
