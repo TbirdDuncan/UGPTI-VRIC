@@ -1,15 +1,24 @@
 package com.example.nav.ui.camera
 
 import android.Manifest
+import android.R.attr.data
+import android.app.Activity
+import android.content.ContentValues
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.RelativeLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -33,11 +42,11 @@ class CameraFragment: Fragment() {
 
     var fotoapparat: Fotoapparat? = null
     //var info: String = editText.getText.toString()
-    val folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-    val myFile = File(folder, "myData1.jpg");// Filename
-
-
+    val filename = "test.png"
+    val sd = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+    //val dest = File(sd, filename)
     var fotoapparatState : FotoapparatState? = null
+
 
     val permissions = arrayOf(
         android.Manifest.permission.CAMERA,
@@ -79,13 +88,20 @@ class CameraFragment: Fragment() {
             fotoapparatState = FotoapparatState.ON
             fotoapparat?.start()
 
-            fab_camera.setOnClickListener {
-                takePhoto()
-            }
-            fotoapparat?.takePicture()?.saveToFile(myFile)
 
 
+        fun takePhoto() {
 
+            fotoapparat
+                ?.takePicture()
+                //?.saveToFile()
+
+        }
+
+        fab_camera.setOnClickListener {
+            takePhoto()
+
+        }
 
 
     }
@@ -104,13 +120,8 @@ class CameraFragment: Fragment() {
             }
         )
     }
-    private fun takePhoto() {
-        if (hasNoPermissions()) {
-            requestPermission()
-        } else {
 
-        }
-    }
+
     private fun hasNoPermissions(): Boolean {
         return ContextCompat.checkSelfPermission(
             this.requireContext(),
@@ -137,6 +148,16 @@ class CameraFragment: Fragment() {
     override fun onStop() {
         super.onStop()
         fotoapparat?.stop()
+        FotoapparatState.OFF
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if(!hasNoPermissions() && fotoapparatState == FotoapparatState.OFF){
+            val intent = Intent(activity!!.applicationContext, fragment_camera::class.java)
+            startActivity(intent)
+            //finish()
+        }
     }
 
 
