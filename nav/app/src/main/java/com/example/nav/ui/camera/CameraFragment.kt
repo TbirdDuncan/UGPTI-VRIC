@@ -51,22 +51,8 @@ class CameraFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        cameraViewModel =
-            ViewModelProviders.of(this).get(CameraViewModel::class.java)
         val root = inflater.inflate(fragment_camera, container, false)
-        val textView: TextView = root.findViewById(R.id.text_camera)
-        val relativeLayout: RelativeLayout = root.findViewById(R.id.layout_camera)
-        cameraViewModel.text.observe(this, Observer {
-            textView.text = it
-        })
-        cameraViewModel.layout.observe(this, Observer {
-            relativeLayout.layoutAnimation
-
-        })
-        //View(activity!!.applicationContext)
-
-
-        return root
+        return root;
     }
 
     override fun onStart() {

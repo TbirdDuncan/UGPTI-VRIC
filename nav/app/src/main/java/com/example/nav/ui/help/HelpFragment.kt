@@ -33,7 +33,7 @@ class HelpFragment : Fragment() {
         val simpleViewAnimator =
             root.findViewById(R.id.viewPager) as ViewAnimator //get the reference of ViewAnimator
 
-        val hello = "Whats up"
+
         val btnNext: Button = root.findViewById(R.id.nxt_button) as Button //get the reference of Button
 
 // set Click event on next button

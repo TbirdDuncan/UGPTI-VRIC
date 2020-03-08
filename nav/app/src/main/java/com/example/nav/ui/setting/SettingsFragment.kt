@@ -44,24 +44,7 @@ import org.w3c.dom.Text
 
 class SettingsFragment : Fragment() {
 
-
-
-
-
-
-
-
-
-
-
-
-    val types = arrayOf("North Dakota", "South Dakota", "Minnesota")
-
-
-
     override fun onCreateView(
-
-
 
         inflater: LayoutInflater,
 
@@ -74,156 +57,79 @@ class SettingsFragment : Fragment() {
         savedInstanceState: Bundle?
 
 
-
-
-
-
-
     ): View {
-
-
-
-
-
 
         val root = inflater.inflate(R.layout.fragment_setting, container, false)
 
-
         val spinnerState = root.findViewById<Spinner>(R.id.spinner)
-
 
         val spinnerCounty = root.findViewById<Spinner>(R.id.spinner2)
 
         val spinnerVehicleType = root.findViewById<Spinner>(R.id.spinner3)
 
+        spinnerCounty.setEnabled(false);
 
 
         //spinner?.adapter = ArrayAdapter(activity!!.applicationContext, R.layout.support_simple_spinner_dropdown_item, types) as SpinnerAdapter
-
-
-
         ArrayAdapter.createFromResource(
 
-
-
             activity!!.applicationContext,
-
-
 
             R.array.stateDropdown,
 
-
-
             android.R.layout.simple_spinner_item).also{adapter ->
-
 
 
             // Specify the layout to use when the list of choices appears
 
-
-
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
-
-
             // Apply the adapter to the spinner
-
-
 
             spinnerState.adapter = adapter
 
-
-
         }
-
-
 
         ArrayAdapter.createFromResource(
 
 
-
             activity!!.applicationContext,
-
-
 
             R.array.counties,
 
-
-
             android.R.layout.simple_spinner_item).also { adapter ->
-
-
 
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
-
-
             spinnerCounty.adapter = adapter
-
-
 
         }
 
         ArrayAdapter.createFromResource(
 
-
-
             activity!!.applicationContext,
-
-
 
             R.array.vehicle,
 
-
-
             android.R.layout.simple_spinner_item).also{adapter ->
-
-
 
             // Specify the layout to use when the list of choices appears
 
-
-
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
-
 
             // Apply the adapter to the spinner
 
-
-
             spinnerVehicleType.adapter = adapter
-
-
 
         }
 
-
-
-
-
-
-
-
-
-
-
-        //spinner.onItemClickListener = object
+         //spinner.onItemClickListener = object
 
 
 
         spinnerState.onItemSelectedListener = object :AdapterView.OnItemSelectedListener {
-
-
-
             override fun onNothingSelected(parent: AdapterView<*>?) {
-
-
-
                 println("erreur")
-
-
-
             }
 
 
@@ -233,36 +139,19 @@ class SettingsFragment : Fragment() {
 
 
             override fun onItemSelected(
-
-
-
                 parent: AdapterView<*>?,
-
-
 
                 view: View?,
 
-
-
                 position: Int,
-
-
 
                 id: Long
 
-
-
             ) {
-
-
 
                 val type = parent?.getItemAtPosition(position).toString()
 
-
-
                 makeText(activity, type, Toast.LENGTH_LONG).show()
-
-
 
                 println(type)
 
