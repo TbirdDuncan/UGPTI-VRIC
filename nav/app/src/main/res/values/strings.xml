@@ -1,5 +1,5 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-    <string name="app_name">Roadway Image Capture</string>
+    <string name="app_name">VRIC</string>
 
 
     <string name="title_camera">Camera</string>
@@ -10,9 +10,13 @@
     <string name="permissionpg">permissionpg</string>
     <string name="next"><![CDATA[>]]></string>
     <string name="back"><![CDATA[<]]></string>
-    <string name="settings"><![CDATA[<]]></string>
-    <string name="camerareturn"><![CDATA[<]]></string>
+    <string name="settings">settings</string>
+    <string name="camerareturn">camerareturn</string>
+    <string name="blankpage">blankpage</string>
+    <string name="blank">blank</string>
+
     <string name="instructions_for_how_to_use_roadway_image_capture_application_click_to_continue">Instructions for how to use Roadway Image Capture application click > to continue</string>
+    <string name="press_to_restart_the_instructions"><![CDATA[Press \'>\' to restart the instructions]]></string>
 
 
     <string-array name="stateDropdown">

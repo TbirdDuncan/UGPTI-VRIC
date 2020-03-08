@@ -15,6 +15,7 @@
         android:layout_marginEnd="8dp"
         android:textAlignment="center"
         android:textSize="20sp"
+        android:textColor="@color/colorBlack"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -98,6 +99,17 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_launcher_camerareturn" />
 
+        <ImageView
+            android:id="@+id/imageView6"
+            android:layout_width="421dp"
+            android:layout_height="821dp"
+            android:baselineAlignBottom="@bool/default_circle_indicator_centered"
+            android:contentDescription="@string/blankpage"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
     </ViewAnimator>
 
     <Button
@@ -105,8 +117,9 @@
         android:layout_width="85dp"
         android:layout_height="420dp"
         android:layout_marginBottom="105dp"
-        android:background="#FFFFFF"
+        android:background="@android:color/transparent"
         android:text="@string/next"
+        android:textColor="@color/colorLightGrey"
         android:textSize="36sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -115,9 +128,9 @@
         android:id="@+id/prv_button"
         android:layout_width="85dp"
         android:layout_height="420dp"
-
+        android:textColor="@color/colorLightGrey"
         android:layout_marginBottom="105dp"
-        android:background="#FFFFFF"
+        android:background="@android:color/transparent"
         android:text="@string/back"
         android:textSize="36sp"
         app:layout_constraintBottom_toBottomOf="parent"
