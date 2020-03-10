@@ -7,18 +7,17 @@ import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.RelativeLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -32,10 +31,12 @@ import io.fotoapparat.log.loggers
 import io.fotoapparat.parameter.ScaleType
 import io.fotoapparat.selector.back
 import kotlinx.android.synthetic.main.fragment_camera.*
-import java.io.File
+import java.io.*
+import java.net.URL
+import java.net.URLConnection
 
 
-class CameraFragment: Fragment() {
+class CameraFragment: Fragment(),ICameraView {
     private lateinit var cameraViewModel: CameraViewModel
     var editText: EditText? = null
     private val STORAGE_PERMISSION_CODE = 23
@@ -46,7 +47,7 @@ class CameraFragment: Fragment() {
     val sd = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
     //val dest = File(sd, filename)
     var fotoapparatState : FotoapparatState? = null
-
+    val presenter = CameraPresenter(this)
 
     val permissions = arrayOf(
         android.Manifest.permission.CAMERA,
@@ -76,16 +77,11 @@ class CameraFragment: Fragment() {
 
 
 
-        fun takePhoto() {
 
-            fotoapparat
-                ?.takePicture()
-                //?.saveToFile()
-
-        }
 
         fab_camera.setOnClickListener {
             takePhoto()
+
 
         }
 
@@ -146,8 +142,25 @@ class CameraFragment: Fragment() {
         }
     }
 
+    fun takePhoto() {
 
+       val photo= fotoapparat?.takePicture()
 
+          photo?.toBitmap()
+           ?.whenAvailable { bitmapPhoto ->
+               //sends image to the presenter
+               presenter.uploadPhoto(bitmapPhoto!!.bitmap)
+               iv_photo.setImageBitmap(bitmapPhoto?.bitmap)
+               iv_photo.setRotation(bitmapPhoto?.rotationDegrees!!.toFloat())
+           }
+        //?.saveToFile()
+
+    }
+
+    override fun showMessage(message: String) {
+        //presents what comes back from cameraPresenter
+        Toast.makeText(context, message, Toast.LENGTH_LONG)
+    }
 
 
 }

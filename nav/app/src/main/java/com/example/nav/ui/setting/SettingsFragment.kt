@@ -48,14 +48,9 @@ class SettingsFragment : Fragment() {
 
         inflater: LayoutInflater,
 
-
-
         container: ViewGroup?,
 
-
-
         savedInstanceState: Bundle?
-
 
     ): View {
 
@@ -132,26 +127,36 @@ class SettingsFragment : Fragment() {
                 println("erreur")
             }
 
-
-
-
-
-
-
             override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+
+            fun onItemSelected(
+
                 parent: AdapterView<*>?,
 
                 view: View?,
 
                 position: Int,
 
-                id: Long
+                id: Long,
+
+                enable: Boolean
 
             ) {
 
                 val type = parent?.getItemAtPosition(position).toString()
 
+                spinnerCounty.setEnabled(true)
+
                 makeText(activity, type, Toast.LENGTH_LONG).show()
+
 
                 println(type)
 
@@ -178,34 +183,18 @@ class SettingsFragment : Fragment() {
 
 
             override fun onItemSelected(
-
-
                 parent: AdapterView<*>?,
-
 
                 view: View?,
 
-
                 position: Int,
-
 
                 id: Long
 
-
             ) {
-
-
                 val type = parent?.getItemAtPosition(position).toString()
-
-
-
                 makeText(activity, type, Toast.LENGTH_LONG).show()
-
-
-
                 println(type)
-
-
             }
         }
 

@@ -1,12 +1,19 @@
 package com.example.nav
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import android.os.Environment
+import android.util.Base64
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import java.io.ByteArrayOutputStream
+import java.io.File
 
 class MainActivity : AppCompatActivity() {
 
