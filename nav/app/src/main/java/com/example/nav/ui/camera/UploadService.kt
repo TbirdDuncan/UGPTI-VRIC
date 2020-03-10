@@ -10,6 +10,7 @@ import retrofit2.Retrofit
 
 
 class UploadService(val listener: IUploadListener) {
+    //the id from grit needs to be stored geofence
     fun uploadPhoto(
         username: String,
         password: String,

@@ -36,7 +36,7 @@ import java.net.URL
 import java.net.URLConnection
 
 
-class CameraFragment: Fragment(),ICameraView {
+class CameraFragment : Fragment(), ICameraView {
     private lateinit var cameraViewModel: CameraViewModel
     var editText: EditText? = null
     private val STORAGE_PERMISSION_CODE = 23
@@ -46,7 +46,7 @@ class CameraFragment: Fragment(),ICameraView {
     val filename = "test.png"
     val sd = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
     //val dest = File(sd, filename)
-    var fotoapparatState : FotoapparatState? = null
+    var fotoapparatState: FotoapparatState? = null
     val presenter = CameraPresenter(this)
 
     val permissions = arrayOf(
@@ -68,25 +68,23 @@ class CameraFragment: Fragment(),ICameraView {
     override fun onStart() {
         super.onStart()
         //if (hasNoPermissions()) {
-            createFotoapparat()
-            requestPermission()
+        createFotoapparat()
+        requestPermission()
 
 
-            fotoapparatState = FotoapparatState.ON
-            fotoapparat?.start()
-
-
-
+        fotoapparatState = FotoapparatState.ON
+        fotoapparat?.start()
+        Toast.makeText(context, "Test foto", Toast.LENGTH_LONG).show()
 
 
         fab_camera.setOnClickListener {
+            Toast.makeText(context, "Test listener", Toast.LENGTH_LONG).show()
             takePhoto()
-
-
         }
 
 
     }
+
     private fun createFotoapparat() {
 
         fotoapparat = Fotoapparat(
@@ -126,7 +124,6 @@ class CameraFragment: Fragment(),ICameraView {
     }
 
 
-
     override fun onStop() {
         super.onStop()
         fotoapparat?.stop()
@@ -135,7 +132,7 @@ class CameraFragment: Fragment(),ICameraView {
 
     override fun onResume() {
         super.onResume()
-        if(!hasNoPermissions() && fotoapparatState == FotoapparatState.OFF){
+        if (!hasNoPermissions() && fotoapparatState == FotoapparatState.OFF) {
             val intent = Intent(activity!!.applicationContext, fragment_camera::class.java)
             startActivity(intent)
             //finish()
@@ -143,16 +140,16 @@ class CameraFragment: Fragment(),ICameraView {
     }
 
     fun takePhoto() {
-
-       val photo= fotoapparat?.takePicture()
-
-          photo?.toBitmap()
-           ?.whenAvailable { bitmapPhoto ->
-               //sends image to the presenter
-               presenter.uploadPhoto(bitmapPhoto!!.bitmap)
-               iv_photo.setImageBitmap(bitmapPhoto?.bitmap)
-               iv_photo.setRotation(bitmapPhoto?.rotationDegrees!!.toFloat())
-           }
+        Toast.makeText(context, "Test", Toast.LENGTH_LONG).show()
+        val photo = fotoapparat?.takePicture()
+        Toast.makeText(context, "After Photo", Toast.LENGTH_LONG).show()
+        photo?.toBitmap()
+            ?.whenAvailable { bitmapPhoto ->
+                //sends image to the presenter
+                presenter.uploadPhoto(bitmapPhoto!!.bitmap)
+                iv_photo.setImageBitmap(bitmapPhoto?.bitmap)
+                iv_photo.setRotation(bitmapPhoto?.rotationDegrees!!.toFloat())
+            }
         //?.saveToFile()
 
     }
@@ -161,6 +158,5 @@ class CameraFragment: Fragment(),ICameraView {
         //presents what comes back from cameraPresenter
         Toast.makeText(context, message, Toast.LENGTH_LONG)
     }
-
 
 }
