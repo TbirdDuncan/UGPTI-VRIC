@@ -68,6 +68,18 @@
             android:layout_width="421dp"
             android:layout_height="821dp"
             android:baselineAlignBottom="@bool/default_circle_indicator_centered"
+            android:contentDescription="@string/homepage"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_launcher_relaunch" />
+
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="421dp"
+            android:layout_height="821dp"
+            android:baselineAlignBottom="@bool/default_circle_indicator_centered"
             android:contentDescription="@string/settings"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -76,7 +88,7 @@
             app:srcCompat="@drawable/ic_launcher_settings" />
 
         <ImageView
-            android:id="@+id/imageView4"
+            android:id="@+id/imageView5"
             android:layout_width="421dp"
             android:layout_height="821dp"
             android:baselineAlignBottom="@bool/default_circle_indicator_centered"
@@ -88,7 +100,7 @@
             app:srcCompat="@drawable/ic_launcher_camerareturn" />
 
         <ImageView
-            android:id="@+id/imageView5"
+            android:id="@+id/imageView6"
             android:layout_width="421dp"
             android:layout_height="821dp"
             android:baselineAlignBottom="@bool/default_circle_indicator_centered"

@@ -25,7 +25,6 @@
         <item>North Dakota</item>
         <item>Minnesota</item>
         <item>South Dakota</item>
-        <item>Montanna</item>
 
     </string-array>
 
@@ -43,8 +42,8 @@
 
     <string-array name="vehicle">
 
-        <item>Snow plow</item>
-        <item>Maintenance vehicle</item>
+        <item>Straight Plow</item>
+        <item>V-Plow</item>
 
     </string-array>
 </resources>

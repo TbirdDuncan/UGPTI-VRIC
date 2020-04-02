@@ -7,19 +7,18 @@ import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.media.Image
-import android.media.ImageReader
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.provider.MediaStore.Images
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.DownloadListener
-import android.widget.*
+import android.widget.EditText
+import android.widget.RelativeLayout
+import android.widget.TextView
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -31,11 +30,9 @@ import io.fotoapparat.Fotoapparat
 import io.fotoapparat.log.logcat
 import io.fotoapparat.log.loggers
 import io.fotoapparat.parameter.ScaleType
-import io.fotoapparat.result.PhotoResult
 import io.fotoapparat.selector.back
 import kotlinx.android.synthetic.main.fragment_camera.*
 import java.io.File
-import java.util.*
 
 
 class CameraFragment: Fragment() {
@@ -45,9 +42,9 @@ class CameraFragment: Fragment() {
 
     var fotoapparat: Fotoapparat? = null
     //var info: String = editText.getText.toString()
-
-    val dest = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/" + UUID.randomUUID().toString() + ".jpg")
-
+    val filename = "test.png"
+    val sd = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+    //val dest = File(sd, filename)
     var fotoapparatState : FotoapparatState? = null
 
 
@@ -66,21 +63,6 @@ class CameraFragment: Fragment() {
         val root = inflater.inflate(fragment_camera, container, false)
         return root;
     }
-    private fun createFotoapparat() {
-
-        fotoapparat = Fotoapparat(
-            context = activity!!.applicationContext,
-            view = camera_view,
-            scaleType = ScaleType.CenterCrop,
-            lensPosition = back(),
-            logger = loggers(
-                logcat()
-            ),
-            cameraErrorCallback = { error ->
-                println("Recorder errors: $error")
-            }
-        )
-    }
 
     override fun onStart() {
         super.onStart()
@@ -94,16 +76,36 @@ class CameraFragment: Fragment() {
 
 
 
-        fab_camera.setOnClickListener {
-            Toast.makeText(context, "Test", Toast.LENGTH_LONG).show()
-            fotoapparat?.takePicture()?.saveToFile(dest)
+        fun takePhoto() {
 
+            fotoapparat
+                ?.takePicture()
+                //?.saveToFile()
+
+        }
+
+        fab_camera.setOnClickListener {
+            takePhoto()
 
         }
 
 
     }
+    private fun createFotoapparat() {
 
+        fotoapparat = Fotoapparat(
+            context = this.requireContext(),
+            view = camera_view,
+            scaleType = ScaleType.CenterCrop,
+            lensPosition = back(),
+            logger = loggers(
+                logcat()
+            ),
+            cameraErrorCallback = { error ->
+                println("Recorder errors: $error")
+            }
+        )
+    }
 
 
     private fun hasNoPermissions(): Boolean {
@@ -123,7 +125,9 @@ class CameraFragment: Fragment() {
         ActivityCompat.requestPermissions(this.requireActivity(), permissions, 0)
     }
 
-
+    enum class FotoapparatState {
+        ON, OFF
+    }
 
 
 
@@ -138,12 +142,10 @@ class CameraFragment: Fragment() {
         if(!hasNoPermissions() && fotoapparatState == FotoapparatState.OFF){
             val intent = Intent(activity!!.applicationContext, fragment_camera::class.java)
             startActivity(intent)
-
+            //finish()
         }
     }
-    enum class FotoapparatState {
-        ON, OFF
-    }
+
 
 
 
