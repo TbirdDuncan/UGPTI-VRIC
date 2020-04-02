@@ -1,31 +1,12 @@
 package com.example.nav.ui.setting
 
 import android.os.Bundle
-
-
-
 import android.view.LayoutInflater
-
-
-
 import android.view.View
-
-
-
 import android.view.ViewGroup
-
-
-
 import android.widget.*
-
-
-
 import androidx.fragment.app.Fragment
-
-
 import com.example.nav.R
-
-
 import android.widget.ArrayAdapter
 import android.widget.Toast.makeText
 import kotlinx.android.synthetic.main.fragment_setting.*
@@ -46,6 +27,8 @@ class SettingsFragment : Fragment() {
         val spinnerState = root.findViewById<Spinner>(R.id.spinner)
         val spinnerCounty = root.findViewById<Spinner>(R.id.spinner2)
         val spinnerVehicleType = root.findViewById<Spinner>(R.id.spinner3)
+
+        spinnerCounty.isEnabled = false  //added to disable county spinner
 
         //create an Array Adapter for the State spinner
         //spinner?.adapter = ArrayAdapter(activity!!.applicationContext, R.layout.support_simple_spinner_dropdown_item, types) as SpinnerAdapter
@@ -101,6 +84,11 @@ class SettingsFragment : Fragment() {
             ) {
 
                 val type = parent?.getItemAtPosition(position).toString()
+
+                if (type == "Minnesota") {//added to enable spinnerCounty once a state has been selected
+                    spinnerCounty.isEnabled = true
+                }
+
                 makeText(activity, type, Toast.LENGTH_LONG).show()
                 println(type)
             }
