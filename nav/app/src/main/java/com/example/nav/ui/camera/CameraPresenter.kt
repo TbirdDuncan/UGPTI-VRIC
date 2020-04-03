@@ -13,7 +13,8 @@ class CameraPresenter(val view: ICameraView) : IUploadListener {
 
     fun uploadPhoto(photo: Bitmap) {
         val stream = ByteArrayOutputStream()
-        photo.compress(Bitmap.CompressFormat.PNG, 100, stream)
+        //look into more
+        photo.compress(Bitmap.CompressFormat.PNG, 2, stream)
         val byte_arr = stream.toByteArray()
         val encodedString = Base64.encodeToString(byte_arr, 0)
         uploadService.uploadPhoto(
@@ -22,7 +23,7 @@ class CameraPresenter(val view: ICameraView) : IUploadListener {
             System.currentTimeMillis().toString(),
             0.0,
             0.0,
-            100,
+            2,
             "North Dakota",
             encodedString,
             "${System.currentTimeMillis()}.jpg"

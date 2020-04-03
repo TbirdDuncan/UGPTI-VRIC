@@ -7,6 +7,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
+import retrofit2.converter.jackson.JacksonConverterFactory
 
 
 class UploadService(val listener: IUploadListener) {
@@ -24,7 +25,8 @@ class UploadService(val listener: IUploadListener) {
     ) {
         //create instance of retrofit
         //establish base url
-        val retrofit = Retrofit.Builder().baseUrl("http://dotsc.ugpti.ndsu.nodak.edu/").build()
+        val retrofit = Retrofit.Builder().baseUrl("http://dotsc.ugpti.ndsu.nodak.edu/").addConverterFactory(
+            JacksonConverterFactory.create()).build()
         //builds rest api
         val service = retrofit.create(ApiService::class.java)
         //makes asynchronous post to URL
@@ -54,7 +56,9 @@ class UploadService(val listener: IUploadListener) {
                 call: Call<UploadResponse>,
                 response: Response<UploadResponse>
             ) {
-                listener.onSuccess(response.body()!!.message)
+                //response . body that is verified as not being null
+                response.body()?.let {listener.onSuccess(it.message)}
+
             }
 
         })

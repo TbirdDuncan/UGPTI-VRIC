@@ -54,5 +54,8 @@ dependencies {
     implementation 'com.google.android.material:material:1.0.0-rc01'
     //help page
     implementation 'com.github.JakeWharton:ViewPagerIndicator:2.4.1'
+    //retrofit stuff
     implementation 'com.squareup.retrofit2:retrofit:2.7.2'
+    implementation 'com.squareup.retrofit2:converter-jackson:2.8.0'
+
 }
