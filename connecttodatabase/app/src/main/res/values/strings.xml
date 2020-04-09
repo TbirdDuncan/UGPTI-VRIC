@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">connect to database</string>
+    <string name="county">County</string>
+    <string name="state">State</string>
+
+</resources>
