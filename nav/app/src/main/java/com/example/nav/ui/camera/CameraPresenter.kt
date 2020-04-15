@@ -1,9 +1,9 @@
 package com.example.nav.ui.camera
 
 import android.graphics.Bitmap
+import android.os.Environment
 import android.util.Base64
 import java.io.ByteArrayOutputStream
-import java.util.*
 
 //Connects Upload Service to CameraFragment
 class CameraPresenter(val view: ICameraView) : IUploadListener {
@@ -12,6 +12,12 @@ class CameraPresenter(val view: ICameraView) : IUploadListener {
     //uploads the photo
 
     fun uploadPhoto(photo: Bitmap) {
+//        val options: BitmapFactory.Options
+//        options = BitmapFactory.Options()
+//        options.inSampleSize = 4
+        val ExternalStorageDirectoryPath =
+            Environment.getExternalStorageDirectory().absolutePath
+        val targetPath = "$ExternalStorageDirectoryPath/Pictures/UGPTI/"
         val stream = ByteArrayOutputStream()
         //look into more
         photo.compress(Bitmap.CompressFormat.PNG, 2, stream)
@@ -25,7 +31,7 @@ class CameraPresenter(val view: ICameraView) : IUploadListener {
             0.0,
             2,
             "North Dakota",
-            encodedString,
+             encodedString,
             "${System.currentTimeMillis()}.jpg"
         )
     }

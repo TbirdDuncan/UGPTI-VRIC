@@ -108,6 +108,7 @@ class CameraFragment: Fragment(), ICameraView {
                     iv_photo.setImageBitmap(bitmapPhoto?.bitmap)
                     iv_photo.setRotation(bitmapPhoto?.rotationDegrees!!.toFloat())
                 }
+
             //?.saveToFile()
 
 

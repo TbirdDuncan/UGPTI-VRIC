@@ -25,8 +25,7 @@ class UploadService(val listener: IUploadListener) {
     ) {
         //create instance of retrofit
         //establish base url
-        val retrofit = Retrofit.Builder().baseUrl("http://dotsc.ugpti.ndsu.nodak.edu/").addConverterFactory(
-            JacksonConverterFactory.create()).build()
+        val retrofit = Retrofit.Builder().baseUrl("http://dotsc.ugpti.ndsu.nodak.edu/").addConverterFactory(JacksonConverterFactory.create()).build()
         //builds rest api
         val service = retrofit.create(ApiService::class.java)
         //makes asynchronous post to URL
