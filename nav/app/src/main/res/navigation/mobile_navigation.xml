@@ -17,9 +17,9 @@
         android:label="Help"
         tools:layout="@layout/fragment_help" />
 
-    <activity
+    <fragment
         android:id="@+id/navigation_settings"
-        android:name="com.example.nav.SettingsFragment"
+        android:name="com.example.nav.ui.setting.SettingsFragment"
         android:label="Settings"
         tools:layout="@layout/fragment_setting" />
 </navigation>
