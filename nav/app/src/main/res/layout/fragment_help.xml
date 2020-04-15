@@ -110,42 +110,15 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-
-
     </ViewAnimator>
-
-    <TextView
-        android:id="@+id/textNext"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="315dp"
-        android:layout_marginLeft="315dp"
-        android:layout_marginTop="275dp"
-        android:textSize="36dp"
-        android:text="@string/next"
-        app:layout_constraintEnd_toStartOf="@+id/text_help"
-        app:layout_constraintStart_toEndOf="@+id/viewPager"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textBack"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="275dp"
-        android:layout_marginEnd="315dp"
-        android:layout_marginRight="315dp"
-        android:textSize="36dp"
-        android:text="@string/back"
-        app:layout_constraintEnd_toStartOf="@+id/text_help"
-        app:layout_constraintStart_toEndOf="@+id/viewPager"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/nxt_button"
-        android:layout_width="200dp"
-        android:layout_height="535dp"
-        android:layout_marginBottom="65dp"
+        android:layout_width="85dp"
+        android:layout_height="420dp"
+        android:layout_marginBottom="105dp"
         android:background="@android:color/transparent"
+        android:text="@string/next"
         android:textColor="@color/colorLightGrey"
         android:textSize="36sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -153,11 +126,12 @@
 
     <Button
         android:id="@+id/prv_button"
-        android:layout_width="200dp"
-        android:layout_height="535dp"
-        android:layout_marginBottom="65dp"
-        android:background="@android:color/transparent"
+        android:layout_width="85dp"
+        android:layout_height="420dp"
         android:textColor="@color/colorLightGrey"
+        android:layout_marginBottom="105dp"
+        android:background="@android:color/transparent"
+        android:text="@string/back"
         android:textSize="36sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

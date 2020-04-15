@@ -1,4 +1,3 @@
-
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
     <string name="app_name">VRIC</string>
 
@@ -20,30 +19,29 @@
     <string name="press_to_restart_the_instructions"><![CDATA[Press \'>\' to restart the instructions]]></string>
 
 
-    <string-array name="stateDropdown">
 
-        <item>North Dakota</item>
-        <item>Minnesota</item>
-        <item>South Dakota</item>
 
-    </string-array>
 
 
     <string-array name="counties">
 
         <item>Cass</item>
+
         <item>Clay</item>
+
         <item>Dakota</item>
+
         <item>Griggs</item>
+
         <item>Steele</item>
 
     </string-array>
-
 
     <string-array name="vehicle">
 
         <item>Straight Plow</item>
         <item>V-Plow</item>
+
 
     </string-array>
 </resources>

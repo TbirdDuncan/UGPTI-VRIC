@@ -3,6 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/nav_view1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:menu="@menu/bottom_nav_menu1"
+        app:navGraph="@navigation/mobile_navigation1" />
+
+    <activity
+        android:id="@+id/nav_host_fragment1"
+        android:name="androidx.navigation.activity.NavHostFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
 
     <TextView
         android:id="@+id/text_settings"
@@ -13,7 +33,6 @@
         android:layout_marginRight="28dp"
         android:text="Please select a State and County:"
         android:textColor="@color/colorBlack"
-        android:textAlignment="center"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -29,7 +48,6 @@
         android:layout_marginRight="75dp"
         android:text="Please select a vehicle type:"
         android:textColor="@color/colorBlack"
-        android:textAlignment="center"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -46,11 +64,9 @@
         android:layout_marginEnd="5dp"
         android:layout_marginRight="50dp"
         android:layout_marginBottom="492dp"
-        android:entries="@array/stateDropdown"
         android:spinnerMode="dropdown"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-
         app:layout_constraintHorizontal_bias="0.009"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -63,7 +79,6 @@
         android:layout_marginLeft="40dp"
         android:layout_marginEnd="5dp"
         android:layout_marginRight="50dp"
-        android:entries="@array/counties"
         android:spinnerMode="dropdown"
         app:layout_constraintBottom_toBottomOf="@+id/spinner"
         app:layout_constraintEnd_toEndOf="parent"
