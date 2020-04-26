@@ -1,0 +1,81 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <string name="app_name">VRIC</string>
+
+
+    <string name="title_camera">Camera</string>
+    <string name="title_help">Help</string>
+    <string name="title_settings">Settings</string>
+    <string name="selected_item">Selected: </string>
+    <string name="homepage">homePage</string>
+    <string name="permissionpg">permissionpg</string>
+    <string name="next"><![CDATA[>]]></string>
+    <string name="back"><![CDATA[<]]></string>
+    <string name="settings">settings</string>
+    <string name="camerareturn">camerareturn</string>
+    <string name="blankpage">blankpage</string>
+    <string name="blank">blank</string>
+
+    <string name="instructions_for_how_to_use_roadway_image_capture_application_click_to_continue">Instructions for how to use Roadway Image Capture application click > to continue</string>
+    <string name="press_to_restart_the_instructions"><![CDATA[Press \'>\' to restart the instructions]]></string>
+
+
+
+<!--    <string name="app_name">Remind me there</string>-->
+    <string name="instruction_where_description">Where do you want to be reminded?</string>
+    <string name="instruction_where_subtitle_description">Drag the map to set the location</string>
+    <string name="instruction_radius_description">Choose the radius</string>
+    <string name="instruction_message_description">Enter the message</string>
+    <string name="continue_description">Continue</string>
+    <string name="error_required">Required</string>
+    <string name="message_hint">We arrived! :]</string>
+    <string name="radius_description">%1$s meters</string>
+
+    <string name="reminder_removal_alert">Remove reminder?</string>
+    <string name="reminder_removal_alert_positive">OK</string>
+    <string name="reminder_removal_alert_negative">Cancel</string>
+
+    <string name="reminder_added_success">Reminder added!</string>
+    <string name="reminder_removed_success">Reminder removed!</string>
+
+    <string name="marker_content_description">Marker</string>
+
+
+    <string name="geofence_unknown_error">
+  Unknown error: the Geofence service is not available now.
+</string>
+    <string name="geofence_not_available">
+  Geofence service is not available now. Go to Settings>Location>Mode and choose High accuracy.
+</string>
+    <string name="geofence_too_many_geofences">
+  Your app has registered too many geofences.
+</string>
+    <string name="geofence_too_many_pending_intents">
+  You have provided too many PendingIntents to the addGeofences() call.
+</string>
+
+
+    <string-array name="counties">
+
+        <item>Cass</item>
+
+        <item>Clay</item>
+
+        <item>Dakota</item>
+
+        <item>Griggs</item>
+
+        <item>Steele</item>
+
+    </string-array>
+
+    <string-array name="vehicle">
+
+        <item>Straight Plow</item>
+        <item>V-Plow</item>
+
+
+    </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
