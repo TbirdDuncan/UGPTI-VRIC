@@ -15,5 +15,9 @@
         android:id="@+id/navigation_settings"
         android:icon="@drawable/ic_settings_black_24dp"
         android:title="Settings" />
+    <item
+        android:id="@+id/navigation_map"
+        android:icon="@drawable/ic_baseline_my_location_24px"
+        android:title="Map" />
 
 </menu>

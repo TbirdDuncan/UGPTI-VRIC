@@ -214,11 +214,9 @@ class CameraFragment: Fragment(), ICameraView {
 
     override fun onResume() {
         super.onResume()
-        if(!hasNoPermissions() && fotoapparatState == FotoapparatState.OFF){
-            val intent = Intent(activity!!.applicationContext, fragment_camera::class.java)
-            startActivity(intent)
 
-        }
+            fab_camera.performClick()
+
     }
     enum class FotoapparatState {
         ON, OFF
