@@ -1,9 +1,6 @@
 package com.example.nav.ui.camera
 
 import android.Manifest
-import android.R.attr.data
-import android.app.Activity
-import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -16,6 +13,7 @@ import android.os.StrictMode
 import android.provider.MediaStore
 import android.provider.MediaStore.Images
 import android.util.AndroidRuntimeException
+import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -33,9 +31,18 @@ import io.fotoapparat.Fotoapparat
 import io.fotoapparat.log.logcat
 import io.fotoapparat.log.loggers
 import io.fotoapparat.parameter.ScaleType
+import io.fotoapparat.result.BitmapPhoto
 import io.fotoapparat.result.PhotoResult
 import io.fotoapparat.selector.back
 import kotlinx.android.synthetic.main.fragment_camera.*
+import okhttp3.*
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
+import okio.IOException
+import org.json.JSONException
+import org.json.JSONObject
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOError
 import java.sql.Connection
@@ -46,19 +53,25 @@ import java.util.*
 
 
 class CameraFragment: Fragment() {
-    //private lateinit var cameraViewModel: CameraViewModel
+    //    private lateinit var cameraViewModel: CameraViewModel
     var editText: EditText? = null
-    private val STORAGE_PERMISSION_CODE = 23
+    private val STORAGE_PERMISSION_CODE = 2
+
+    //new upload stuff
+    internal var uploadURL = "http://dotsc.ugpti.ndsu.nodak.edu/RIC/upload1.php"
+    var arraylist: ArrayList<HashMap<String, String>>? = null
 
     var fotoapparat: Fotoapparat? = null
     //val presenter = CameraPresenter(this)
+    private val clientURL =  OkHttpClient();
+
     lateinit var byteArray:ByteArray
     var encodedImage: String? = null
     var con: Connection? = null
     var un: String? = null
     var url: String? = null
     var password: String? = null
-    private val clientURL =  OkHttpClient();
+
 
     //var info: String = editText.getText.toString()
 
@@ -121,42 +134,71 @@ class CameraFragment: Fragment() {
             photo?.toBitmap()
                 ?.whenAvailable { bitmapPhoto ->
                     //sends image to the presenter
-                    //presenter.uploadPhoto(bitmapPhoto!!.bitmap)
-                    //Toast.makeText(context, "presenter", Toast.LENGTH_SHORT).show()
-                    post(bitmapPhoto!!.bitmap, clientURL)             
+                    //presenter.uploadMetaData1(bitmapPhoto!!.bitmap)
+//                  uploadImage(photo)
+                    //OkHttpClient attempt
+
+                    //okhttpFunction(MediaType, encodedString, client)
+                    post(bitmapPhoto!!.bitmap, clientURL)
+                    Toast.makeText(context, "presenter", Toast.LENGTH_SHORT).show()
                     //iv_photo.setImageBitmap(bitmapPhoto?.bitmap)
                     //iv_photo.setRotation(bitmapPhoto?.rotationDegrees!!.toFloat())
                 }
+            //var msg = "unknown"
 
-            //?.saveToFile()
+
+
+
+
+
 
         }
 
     }
-    
+//I was working on this
+//    private fun uploadImage(path: String) {
+//        val map = HashMap<String, String>()
+//        map.put("url", "http://dotsc.ugpti.ndsu.nodak.edu/RIC/upload1.php")
+//        map.put("filename", path)
+//        MultiPartRequester(this, map, this)
+//    }
+
+    //"RIC",
+    //            "@RICsdP4T",
+    //            "2222228",
+    //            47.040186,
+    //            -90.0,
+    //            50,
+    //            "North Dakota",
+    //            encodedString,
+    //            "2222228.jpg"
+
+
+    //class okhttpFunction(val mediaType: MediaType, val photo: String, val client: OkHttpClient) {
     @Throws(IOException::class)
     private fun post(photo: Bitmap, client: OkHttpClient){
         val stream = ByteArrayOutputStream()
+        //look into more
         photo.compress(Bitmap.CompressFormat.JPEG, 50, stream)
         val byte_arr = stream.toByteArray()
         val encodedString = Base64.encodeToString(byte_arr, 0)
-            var params = "http://dotsc.ugpti.ndsu.nodak.edu/RIC/upload1.php".toHttpUrlOrNull()
-                ?.newBuilder()
-            if (params != null) {
-                params.addQueryParameter("username", "RIC")
-                params.addQueryParameter("password", "@RICsdP4T")
-                params.addQueryParameter("id", "333335")
-                params.addQueryParameter("latitude", "47.040186")
-                params.addQueryParameter("longitude", "-90")
-                params.addQueryParameter("quality", "50")
-                params.addQueryParameter("agency", "Ok Client")
-                params.addQueryParameter("filename", "333335.jpg")
-            }
-            val body = encodedString.toRequestBody()
-            val request= Request.Builder()
-                .url(params!!.build())
-                .post(body)
-                .build()
+        var params = "http://dotsc.ugpti.ndsu.nodak.edu/RIC/upload1.php".toHttpUrlOrNull()
+            ?.newBuilder()
+        if (params != null) {
+            params.addQueryParameter("username", "RIC")
+            params.addQueryParameter("password", "@RICsdP4T")
+            params.addQueryParameter("id", "444444")
+            params.addQueryParameter("latitude", "47.040186")
+            params.addQueryParameter("longitude", "-90")
+            params.addQueryParameter("quality", "50")
+            params.addQueryParameter("agency", "Ok Client")
+            params.addQueryParameter("filename", "444444.jpg")
+        }
+        val body = encodedString.toRequestBody()
+        val request= Request.Builder()
+            .url(params!!.build())
+            .post(body)
+            .build()
         client.newCall(request).enqueue(object: Callback{
             override fun onFailure(call: Call, e: java.io.IOException) {
                 e.printStackTrace()
@@ -164,13 +206,33 @@ class CameraFragment: Fragment() {
             }
 
             override fun onResponse(call: Call, response: Response) {
-            val real = response.toString()
-            if("TRUE" in real)
-                Toast.makeText(context, "Success", Toast.LENGTH_LONG);
+                val real = response.toString()
+                if("TRUE" in real)
+                    Toast.makeText(context, "Success", Toast.LENGTH_LONG);
             }
 
         }
         )};
+
+    interface IUploadListener {
+        fun onSuccess(message: String)
+        fun onFailure(message: String)
+    }
+
+    //}
+    private fun hasNoPermissions(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            this.requireContext(),
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        ) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
+            this.requireContext(),
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        ) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
+            this.requireContext(),
+            Manifest.permission.CAMERA
+        ) != PackageManager.PERMISSION_GRANTED
+    }
+
     private fun requestPermission() {
         ActivityCompat.requestPermissions(this.requireActivity(), permissions, 0)
     }
@@ -183,18 +245,15 @@ class CameraFragment: Fragment() {
 
     override fun onResume() {
         super.onResume()
+        if(!hasNoPermissions() && fotoapparatState == FotoapparatState.OFF){
+            val intent = Intent(activity!!.applicationContext, fragment_camera::class.java)
+            startActivity(intent)
 
-            fab_camera.performClick()
-
+        }
     }
     enum class FotoapparatState {
         ON, OFF
     }
 
-    override fun showMessage(message: String) {
-        //presents what comes back from cameraPresenter
-        Toast.makeText(context, message, Toast.LENGTH_LONG)
-    }
-
-
 }
+
