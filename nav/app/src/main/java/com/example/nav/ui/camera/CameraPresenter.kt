@@ -41,4 +41,5 @@ class CameraPresenter(val view: ICameraView) : IUploadListener {
 
 interface ICameraView {
     fun showMessage(message: String)
+
 }
