@@ -45,20 +45,20 @@ import java.time.LocalDateTime
 import java.util.*
 
 
-class CameraFragment: Fragment(), ICameraView {
-    private lateinit var cameraViewModel: CameraViewModel
+class CameraFragment: Fragment() {
+    //private lateinit var cameraViewModel: CameraViewModel
     var editText: EditText? = null
     private val STORAGE_PERMISSION_CODE = 23
 
     var fotoapparat: Fotoapparat? = null
-    val presenter = CameraPresenter(this)
+    //val presenter = CameraPresenter(this)
     lateinit var byteArray:ByteArray
     var encodedImage: String? = null
     var con: Connection? = null
     var un: String? = null
     var url: String? = null
     var password: String? = null
-
+    private val clientURL =  OkHttpClient();
 
     //var info: String = editText.getText.toString()
 
@@ -121,90 +121,59 @@ class CameraFragment: Fragment(), ICameraView {
             photo?.toBitmap()
                 ?.whenAvailable { bitmapPhoto ->
                     //sends image to the presenter
-                    presenter.uploadPhoto(bitmapPhoto!!.bitmap)
-                    Toast.makeText(context, "presenter", Toast.LENGTH_SHORT).show()
-                    iv_photo.setImageBitmap(bitmapPhoto?.bitmap)
-                    iv_photo.setRotation(bitmapPhoto?.rotationDegrees!!.toFloat())
+                    //presenter.uploadPhoto(bitmapPhoto!!.bitmap)
+                    //Toast.makeText(context, "presenter", Toast.LENGTH_SHORT).show()
+                    post(bitmapPhoto!!.bitmap, clientURL)             
+                    //iv_photo.setImageBitmap(bitmapPhoto?.bitmap)
+                    //iv_photo.setRotation(bitmapPhoto?.rotationDegrees!!.toFloat())
                 }
-            var msg = "unknown"
-            try {
-                con = connectionclass(un, password, url)
-                var currentDateTime = LocalDateTime.now()
 
-                val commands =
-                    "Insert into VirtualCapture(SiteID, CollectionDateTime, FilePath, Quality, AgencyName) values ('7','$currentDateTime','$photo','2','UGPTI')"
-                var preStmt = con!!.prepareStatement(commands)
-                preStmt.executeUpdate()
-                msg = "Inserted Successfully"
-            } catch (ex: SQLException) {
-                msg = ex.message.toString()
-                Log.d("Error no 1:", msg)
-            } catch (ex: IOError) {
-                msg = ex.message.toString()
-                Log.d("Error no 2:", msg)
-            } catch (ex: AndroidRuntimeException) {
-                msg = ex.message.toString()
-                Log.d("Error no 3:", msg)
-            } catch (ex: NullPointerException) {
-                msg = ex.message.toString()
-                Log.d("Error no 4:", msg)
-            } catch (ex: Exception) {
-                msg = ex.message.toString()
-                Log.d("Error no 5:", msg)
-            }
             //?.saveToFile()
-
 
         }
 
-
     }
+    
+    @Throws(IOException::class)
+    private fun post(photo: Bitmap, client: OkHttpClient){
+        val stream = ByteArrayOutputStream()
+        photo.compress(Bitmap.CompressFormat.JPEG, 50, stream)
+        val byte_arr = stream.toByteArray()
+        val encodedString = Base64.encodeToString(byte_arr, 0)
+            var params = "http://dotsc.ugpti.ndsu.nodak.edu/RIC/upload1.php".toHttpUrlOrNull()
+                ?.newBuilder()
+            if (params != null) {
+                params.addQueryParameter("username", "RIC")
+                params.addQueryParameter("password", "@RICsdP4T")
+                params.addQueryParameter("id", "333335")
+                params.addQueryParameter("latitude", "47.040186")
+                params.addQueryParameter("longitude", "-90")
+                params.addQueryParameter("quality", "50")
+                params.addQueryParameter("agency", "Ok Client")
+                params.addQueryParameter("filename", "333335.jpg")
+            }
+            val body = encodedString.toRequestBody()
+            val request= Request.Builder()
+                .url(params!!.build())
+                .post(body)
+                .build()
+        client.newCall(request).enqueue(object: Callback{
+            override fun onFailure(call: Call, e: java.io.IOException) {
+                e.printStackTrace()
+                Toast.makeText(context, "failure", Toast.LENGTH_LONG);
+            }
 
+            override fun onResponse(call: Call, response: Response) {
+            val real = response.toString()
+            if("TRUE" in real)
+                Toast.makeText(context, "Success", Toast.LENGTH_LONG);
+            }
 
-
-    private fun hasNoPermissions(): Boolean {
-        return ContextCompat.checkSelfPermission(
-            this.requireContext(),
-            Manifest.permission.READ_EXTERNAL_STORAGE
-        ) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
-            this.requireContext(),
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-        ) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
-            this.requireContext(),
-            Manifest.permission.CAMERA
-        ) != PackageManager.PERMISSION_GRANTED
-    }
-
+        }
+        )};
     private fun requestPermission() {
         ActivityCompat.requestPermissions(this.requireActivity(), permissions, 0)
     }
-    fun connectionclass(
-        user: String?,
-        passwords: String?,
-        urls: String?
-    ): Connection? {
-        val policy =
-            StrictMode.ThreadPolicy.Builder().permitAll().build()
-        StrictMode.setThreadPolicy(policy)
-        var connection: Connection? = null
-        var ConnectionURL: String? = null
-        try {
-            Class.forName("net.sourceforge.jtds.jdbc.Driver")
-
-            connection = DriverManager.getConnection(url,  un, password)
-        } catch (se: SQLException) {
-            Log.e("error no 1", se.message)
-        } catch (e: ClassNotFoundException) {
-            Log.e("error no 2", e.message)
-        } catch (e: Exception) {
-            Log.e("error no 3", e.message)
-        }
-        return connection
-    }
-
-
-
-
 
     override fun onStop() {
         super.onStop()
