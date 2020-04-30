@@ -1,18 +1,41 @@
 package com.example.nav.ui.camera
 
-import android.graphics.Bitmap
 import com.example.nav.data.ApiService
-import com.example.nav.data.UploadResponse
+import com.example.nav.data.ImageHeaderIntercepter
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody.Part.Companion.createFormData
+import okhttp3.OkHttpClient
+import okhttp3.RequestBody
+import okhttp3.ResponseBody
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
+import timber.log.Timber
 
 
 class UploadService(val listener: IUploadListener) {
+    val retrofit: Retrofit
+    init{
+        val logging = HttpLoggingInterceptor(object : HttpLoggingInterceptor.Logger {
+
+            override fun log(message: String) {
+                Timber.tag("OkHttp").d(message)
+            }
+        })
+        retrofit = Retrofit
+        .Builder()
+        .client(OkHttpClient.Builder().addInterceptor(logging).build())
+        .baseUrl("http://dotsc.ugpti.ndsu.nodak.edu/")
+        .addConverterFactory(JacksonConverterFactory.create())
+        .build()
+    }
+
     //the id from grit needs to be stored geofence
-    fun uploadPhoto(
+    fun uploadMetaData(
         username: String,
         password: String,
         id: String,
@@ -24,13 +47,15 @@ class UploadService(val listener: IUploadListener) {
         filename: String
     ) {
         //create instance of retrofit
-        //establish base url
-        val retrofit = Retrofit.Builder().baseUrl("http://dotsc.ugpti.ndsu.nodak.edu/").addConverterFactory(
-            JacksonConverterFactory.create()).build()
+        //establish base u
+
+        val bodyImage = createFormData("image", filename, RequestBody.create("image/*".toMediaTypeOrNull(), image))
+
         //builds rest api
         val service = retrofit.create(ApiService::class.java)
         //makes asynchronous post to URL
-        service.uploadBitmap(
+        service.upload1(
+            bodyImage,
             username,
             password,
             id,
@@ -38,32 +63,27 @@ class UploadService(val listener: IUploadListener) {
             longitude,
             quality,
             agency,
-            image,
             filename
-        ).enqueue(object : Callback<UploadResponse> {
-
+        ).enqueue(object : Callback<ResponseBody> {
 
             /**
              * @param call retrofit tried to execute this call, check out ApiService
              * @param t the error that retrofit gives us, if null states Unknown
              */
-            override fun onFailure(call: Call<UploadResponse>, t: Throwable) {
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 //debug
                 listener.onFailure(t.message ?: "Unknown Error Occured")
             }
 
             override fun onResponse(
-                call: Call<UploadResponse>,
-                response: Response<UploadResponse>
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
             ) {
                 //response . body that is verified as not being null
-                response.body()?.let {listener.onSuccess(it.message)}
-
+                response.body()?.let {listener.onSuccess(it.string())}
             }
-
         })
     }
-
 }
 
 interface IUploadListener {

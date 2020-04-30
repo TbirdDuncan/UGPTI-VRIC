@@ -1,9 +1,6 @@
 package com.example.nav.ui.camera
 
 import android.Manifest
-import android.R.attr.data
-import android.app.Activity
-import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -16,6 +13,7 @@ import android.os.StrictMode
 import android.provider.MediaStore
 import android.provider.MediaStore.Images
 import android.util.AndroidRuntimeException
+import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -29,13 +27,24 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.nav.R
 import com.example.nav.R.layout.fragment_camera
+import com.example.nav.data.AsyncTaskCompleteListener
+import com.example.nav.data.MultiPartRequester
 import io.fotoapparat.Fotoapparat
 import io.fotoapparat.log.logcat
 import io.fotoapparat.log.loggers
 import io.fotoapparat.parameter.ScaleType
+import io.fotoapparat.result.BitmapPhoto
 import io.fotoapparat.result.PhotoResult
 import io.fotoapparat.selector.back
 import kotlinx.android.synthetic.main.fragment_camera.*
+import okhttp3.*
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
+import okio.IOException
+import org.json.JSONException
+import org.json.JSONObject
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOError
 import java.sql.Connection
@@ -45,13 +54,19 @@ import java.time.LocalDateTime
 import java.util.*
 
 
-class CameraFragment: Fragment(), ICameraView {
-    private lateinit var cameraViewModel: CameraViewModel
+class CameraFragment: Fragment() {
+//    private lateinit var cameraViewModel: CameraViewModel
     var editText: EditText? = null
-    private val STORAGE_PERMISSION_CODE = 23
+    private val STORAGE_PERMISSION_CODE = 2
+
+    //new upload stuff
+    internal var uploadURL = "http://dotsc.ugpti.ndsu.nodak.edu/RIC/upload1.php"
+    var arraylist: ArrayList<HashMap<String, String>>? = null
 
     var fotoapparat: Fotoapparat? = null
-    val presenter = CameraPresenter(this)
+    //val presenter = CameraPresenter(this)
+    private val clientURL =  OkHttpClient();
+
     lateinit var byteArray:ByteArray
     var encodedImage: String? = null
     var con: Connection? = null
@@ -121,47 +136,92 @@ class CameraFragment: Fragment(), ICameraView {
             photo?.toBitmap()
                 ?.whenAvailable { bitmapPhoto ->
                     //sends image to the presenter
-                    presenter.uploadPhoto(bitmapPhoto!!.bitmap)
-                    Toast.makeText(context, "presenter", Toast.LENGTH_SHORT).show()
-                    iv_photo.setImageBitmap(bitmapPhoto?.bitmap)
-                    iv_photo.setRotation(bitmapPhoto?.rotationDegrees!!.toFloat())
-                }
-            var msg = "unknown"
-            try {
-                con = connectionclass(un, password, url)
-                var currentDateTime = LocalDateTime.now()
+                    //presenter.uploadMetaData1(bitmapPhoto!!.bitmap)
+//                  uploadImage(photo)
+                    //OkHttpClient attempt
 
-                val commands =
-                    "Insert into VirtualCapture(SiteID, CollectionDateTime, FilePath, Quality, AgencyName) values ('7','$currentDateTime','$photo','2','UGPTI')"
-                var preStmt = con!!.prepareStatement(commands)
-                preStmt.executeUpdate()
-                msg = "Inserted Successfully"
-            } catch (ex: SQLException) {
-                msg = ex.message.toString()
-                Log.d("Error no 1:", msg)
-            } catch (ex: IOError) {
-                msg = ex.message.toString()
-                Log.d("Error no 2:", msg)
-            } catch (ex: AndroidRuntimeException) {
-                msg = ex.message.toString()
-                Log.d("Error no 3:", msg)
-            } catch (ex: NullPointerException) {
-                msg = ex.message.toString()
-                Log.d("Error no 4:", msg)
-            } catch (ex: Exception) {
-                msg = ex.message.toString()
-                Log.d("Error no 5:", msg)
-            }
-            //?.saveToFile()
+                    //okhttpFunction(MediaType, encodedString, client)
+                    post(bitmapPhoto!!.bitmap, clientURL)
+                    Toast.makeText(context, "presenter", Toast.LENGTH_SHORT).show()
+                    //iv_photo.setImageBitmap(bitmapPhoto?.bitmap)
+                    //iv_photo.setRotation(bitmapPhoto?.rotationDegrees!!.toFloat())
+                }
+            //var msg = "unknown"
+
+
+
+
+
 
 
         }
 
+    }
+//I was working on this
+//    private fun uploadImage(path: String) {
+//        val map = HashMap<String, String>()
+//        map.put("url", "http://dotsc.ugpti.ndsu.nodak.edu/RIC/upload1.php")
+//        map.put("filename", path)
+//        MultiPartRequester(this, map, this)
+//    }
 
+    //"RIC",
+    //            "@RICsdP4T",
+    //            "2222228",
+    //            47.040186,
+    //            -90.0,
+    //            50,
+    //            "North Dakota",
+    //            encodedString,
+    //            "2222228.jpg"
+
+
+    //class okhttpFunction(val mediaType: MediaType, val photo: String, val client: OkHttpClient) {
+        @Throws(IOException::class)
+    private fun post(photo: Bitmap, client: OkHttpClient){
+        val stream = ByteArrayOutputStream()
+        //look into more
+        photo.compress(Bitmap.CompressFormat.JPEG, 50, stream)
+        val byte_arr = stream.toByteArray()
+        val encodedString = Base64.encodeToString(byte_arr, 0)
+            var params = "http://dotsc.ugpti.ndsu.nodak.edu/RIC/upload1.php".toHttpUrlOrNull()
+                ?.newBuilder()
+            if (params != null) {
+                params.addQueryParameter("username", "RIC")
+                params.addQueryParameter("password", "@RICsdP4T")
+                params.addQueryParameter("id", "333335")
+                params.addQueryParameter("latitude", "47.040186")
+                params.addQueryParameter("longitude", "-90")
+                params.addQueryParameter("quality", "50")
+                params.addQueryParameter("agency", "Ok Client")
+                params.addQueryParameter("filename", "333335.jpg")
+            }
+            val body = encodedString.toRequestBody()
+            val request= Request.Builder()
+                .url(params!!.build())
+                .post(body)
+                .build()
+        client.newCall(request).enqueue(object: Callback{
+            override fun onFailure(call: Call, e: java.io.IOException) {
+                e.printStackTrace()
+                Toast.makeText(context, "failure", Toast.LENGTH_LONG);
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+            val real = response.toString()
+            if("TRUE" in real)
+                Toast.makeText(context, "Success", Toast.LENGTH_LONG);
+            }
+
+        }
+        )};
+
+    interface IUploadListener {
+        fun onSuccess(message: String)
+        fun onFailure(message: String)
     }
 
-
-
+    //}
     private fun hasNoPermissions(): Boolean {
         return ContextCompat.checkSelfPermission(
             this.requireContext(),
@@ -178,33 +238,6 @@ class CameraFragment: Fragment(), ICameraView {
     private fun requestPermission() {
         ActivityCompat.requestPermissions(this.requireActivity(), permissions, 0)
     }
-    fun connectionclass(
-        user: String?,
-        passwords: String?,
-        urls: String?
-    ): Connection? {
-        val policy =
-            StrictMode.ThreadPolicy.Builder().permitAll().build()
-        StrictMode.setThreadPolicy(policy)
-        var connection: Connection? = null
-        var ConnectionURL: String? = null
-        try {
-            Class.forName("net.sourceforge.jtds.jdbc.Driver")
-
-            connection = DriverManager.getConnection(url,  un, password)
-        } catch (se: SQLException) {
-            Log.e("error no 1", se.message)
-        } catch (e: ClassNotFoundException) {
-            Log.e("error no 2", e.message)
-        } catch (e: Exception) {
-            Log.e("error no 3", e.message)
-        }
-        return connection
-    }
-
-
-
-
 
     override fun onStop() {
         super.onStop()
@@ -223,11 +256,5 @@ class CameraFragment: Fragment(), ICameraView {
     enum class FotoapparatState {
         ON, OFF
     }
-
-    override fun showMessage(message: String) {
-        //presents what comes back from cameraPresenter
-        Toast.makeText(context, message, Toast.LENGTH_LONG)
-    }
-
 
 }
