@@ -6,38 +6,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingTop="0dp">
-
-
-    <TextView
-        android:id="@+id/text_settings"
+    <RelativeLayout
+        android:id="@+id/layout_setting"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="28dp"
-        android:layout_marginBottom="480dp"
-        android:text="Please select a State and County:"
-        android:textColor="@color/colorBlack"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent"
 
-    <TextView
-        android:id="@+id/text_settings2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="75dp"
-        android:layout_marginBottom="440dp"
-        android:text="Please select a vehicle type:"
-        android:textColor="@color/colorBlack"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:background="@android:color/white">
 
-    <Spinner
+        <TextView
+            android:id="@+id/text_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Please select a State, County, and vehicle type:"
+            android:textColor="@color/colorWhite"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@id/spinner"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+
+        <Spinner
 
         android:id="@+id/spinner"
         android:layout_width="wrap_content"
@@ -51,7 +39,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.081"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/text_settings" />
 
     <Spinner
 
@@ -67,7 +55,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.081"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/spinner" />
 
     <Spinner
 
@@ -84,5 +72,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.081"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/spinner2" />
+    </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

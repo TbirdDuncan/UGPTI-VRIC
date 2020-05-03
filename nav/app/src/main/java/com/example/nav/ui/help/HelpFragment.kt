@@ -27,7 +27,7 @@ class HelpFragment : Fragment() {
             ViewModelProviders.of(this).get(HelpViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_help, container, false)
         val textView: TextView = root.findViewById(R.id.text_help)
-        helpViewModel.text.observe(this, Observer {
+        helpViewModel.text.observe(this.requireActivity(), Observer {
             textView.text = it
         })
         val simpleViewAnimator =

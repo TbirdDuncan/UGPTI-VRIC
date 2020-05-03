@@ -3,24 +3,20 @@ package com.example.nav.ui.setting
 
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
 import android.os.StrictMode
-import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
+import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
-import android.widget.ArrayAdapter
-import android.widget.Spinner
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.nav.R
 import kotlinx.android.synthetic.main.fragment_setting.*
-import java.sql.*
+import java.sql.Connection
+import java.sql.DriverManager
+import java.sql.SQLException
 import java.util.*
 
 
@@ -184,15 +180,27 @@ class SettingsFragment : Fragment() {
 
 
 
-
-                Toast.makeText(activity!!.applicationContext, name, Toast.LENGTH_SHORT)
+                val save = parent!!.getItemAtPosition(position).toString();
+                Toast.makeText(activity!!.applicationContext, save, Toast.LENGTH_SHORT)
                     .show()
+
+
+
+                /*
+             * Set the value of the text field in the UI
+             */
+                /*
+             * Set the value of the text field in the UI
+             */
+
+
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
         return rootView
     }
+
 
     @SuppressLint("NewApi")
     private fun CONN(
