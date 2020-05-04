@@ -45,6 +45,7 @@ import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.LocationServices
 import com.google.gson.Gson
+import kotlinx.android.synthetic.main.fragment_camera.*
 
 class ReminderRepository(private val context: Context) {
 
@@ -56,20 +57,20 @@ class ReminderRepository(private val context: Context) {
   private val preferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
   private val gson = Gson()
   private val geofencingClient = LocationServices.getGeofencingClient(context)
-  private val geofencePendingIntent: PendingIntent by lazy {
+  private val geofencePendingIntent: PendingIntent by lazy{
     val intent = Intent(context, GeofenceBroadcastReceiver::class.java)
     PendingIntent.getBroadcast(
         context,
         0,
         intent,
         PendingIntent.FLAG_UPDATE_CURRENT)
+
   }
 
   fun add(reminder: Reminder) {
     // 1
     if (buildGeofence(reminder) != null
-        && ContextCompat.checkSelfPermission(
-            context,
+        && ContextCompat.checkSelfPermission(context,
             Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
       // 2
       geofencingClient

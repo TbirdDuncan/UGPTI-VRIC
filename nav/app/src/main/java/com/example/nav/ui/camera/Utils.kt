@@ -88,7 +88,7 @@ fun sendNotification(context: Context, message: String, latLng: LatLng) {
 
   }
 
-    val intent = CameraFragment.newIntent(context.applicationContext, latLng)
+ //   val intent = CameraFragment.newIntent(context.applicationContext, latLng)
 
  //  val stackBuilder = TaskStackBuilder.create(context)
 //       .addParentStack(MapFragment::class.java)

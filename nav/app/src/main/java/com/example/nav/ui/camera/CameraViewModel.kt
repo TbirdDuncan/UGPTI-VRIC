@@ -1,19 +1,21 @@
 package com.example.nav.ui.camera
 
+import android.graphics.Camera
+import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.nav.R
 import io.fotoapparat.Fotoapparat
+import io.fotoapparat.view.CameraRenderer
+import io.fotoapparat.view.CameraView
+import kotlinx.android.synthetic.main.fragment_camera.*
 
 class CameraViewModel : ViewModel() {
     var fotoapparat: Fotoapparat? = null
 
-    private val camera_text = MutableLiveData<String>().apply {
-
+    private val _camview = MutableLiveData<CameraRenderer>().apply {
     }
-    val text: LiveData<String> = camera_text
-    private val camera_layout = MutableLiveData<String>().apply {
+    val camview: LiveData<CameraRenderer> = _camview
 
-    }
-    val layout: LiveData<String> = camera_layout
 }

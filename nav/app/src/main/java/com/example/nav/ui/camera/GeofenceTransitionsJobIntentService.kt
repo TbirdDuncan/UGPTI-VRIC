@@ -32,14 +32,30 @@ package com.example.nav.ui.camera
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Camera
+import android.hardware.Camera.PictureCallback
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.SurfaceHolder
+import android.view.SurfaceView
+import android.view.ViewGroup
 import androidx.core.app.JobIntentService
+import com.example.nav.R
+import com.example.nav.data.TakePhotoEvent
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingEvent
+import io.fotoapparat.Fotoapparat
+import io.fotoapparat.view.CameraRenderer
+import io.fotoapparat.view.CameraView
+import okhttp3.Callback
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import java.nio.channels.DatagramChannel.open
 
-class GeofenceTransitionsJobIntentService : JobIntentService() {
 
-  companion object {
+class GeofenceTransitionsJobIntentService() : JobIntentService() {
+
+  companion object takephoto{
     private const val LOG_TAG = "GeoTrIntentService"
 
     private const val JOB_ID = 573
@@ -50,6 +66,27 @@ class GeofenceTransitionsJobIntentService : JobIntentService() {
         GeofenceTransitionsJobIntentService::class.java, JOB_ID,
         intent)
     }
+    fun onCreateView(
+      inflater: LayoutInflater,
+      container: ViewGroup?
+    ): CameraRenderer {
+
+      val root = inflater.inflate(R.layout.fragment_camera, container, false)
+      //setContentView(R.layout.activity_main)
+
+      val mapFragment = root.findViewById<CameraView>(R.id.camera_view)
+
+
+      return mapFragment
+    }
+  }
+  fun createFotoapparat() {
+    var fotoapparat: Fotoapparat? = null
+
+
+
+
+
   }
 
   override fun onHandleWork(intent: Intent) {
@@ -72,7 +109,13 @@ class GeofenceTransitionsJobIntentService : JobIntentService() {
       if (message != null && latLng != null) {
         sendNotification(this, message, latLng)
       }
-      CameraFragment.takePhoto()
+
+      val stickyEvent = EventBus.getDefault().getStickyEvent(TakePhotoEvent::class.java)
+// Better check that an event was actually posted before
+      //if(stickyEvent != null) {
+        EventBus.getDefault().postSticky(TakePhotoEvent())
+     // }
+
     }
   }
 

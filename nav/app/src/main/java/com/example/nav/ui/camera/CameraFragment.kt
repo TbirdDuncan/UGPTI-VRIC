@@ -51,20 +51,27 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.nav.R
+import com.example.nav.data.TakePhotoEvent
 import com.example.nav.ui.map.showReminderInMap
+import com.google.android.gms.location.Geofence
+import com.google.android.gms.location.GeofencingEvent
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.fotoapparat.Fotoapparat
 import io.fotoapparat.log.logcat
 import io.fotoapparat.log.loggers
 import io.fotoapparat.selector.back
+import io.fotoapparat.view.CameraView
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_camera.*
 import okhttp3.*
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import okio.IOException
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import java.io.ByteArrayOutputStream
 import java.sql.Connection
 import java.sql.DriverManager
@@ -78,7 +85,7 @@ class CameraFragment : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerCli
     internal var uploadURL = "http://dotsc.ugpti.ndsu.nodak.edu/RIC/upload1.php"
 
     var arraylist: ArrayList<HashMap<String, String>>? = null
-    lateinit var btnSchedule:Button
+    lateinit var btnSchedule: Button
 
 
     var fotoapparat: Fotoapparat? = null
@@ -101,7 +108,6 @@ class CameraFragment : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerCli
     var password: String? = null
 
 
-
     private var map: GoogleMap? = null
 
     private lateinit var locationManager: LocationManager
@@ -120,21 +126,11 @@ class CameraFragment : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerCli
         mapFragment.getMapAsync(this)
 
 
+
         locationManager =
             activity!!.applicationContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
-        if (ContextCompat.checkSelfPermission(
-                this.requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            )
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this.requireActivity(),
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                MY_LOCATION_REQUEST_CODE
-            )
-        }
+
 
 
 
@@ -148,31 +144,89 @@ class CameraFragment : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerCli
 
         return root
     }
-    companion object takePhoto{
+
+    companion object {
         private const val MY_LOCATION_REQUEST_CODE = 329
         private const val NEW_REMINDER_REQUEST_CODE = 330
         private const val EXTRA_LAT_LNG = "EXTRA_LAT_LNG"
-
         fun newIntent(context: Context, latLng: LatLng): Intent {
             val intent = Intent(context, CameraFragment::class.java)
             intent.putExtra(EXTRA_LAT_LNG, latLng)
 
             return intent
         }
-        fun takePhoto(){
-            val inflater: LayoutInflater? = null
-            val container: ViewGroup? = null
-            val root = inflater?.inflate(R.layout.fragment_camera, container, false)
-            //setContentView(R.layout.activity_main)
-            if(root != null) {
-                CameraFragment().fab_camera.performClick()
-            }
-        }
 
+//        fun onCreateView(
+//            inflater: LayoutInflater,
+//            container: ViewGroup?,
+//            savedInstanceState: Bundle?
+//        ): View? {
+//
+//            val root = inflater.inflate(R.layout.fragment_camera, container, false)
+//            //setContentView(R.layout.activity_main)
+//
+//            val cam = root.findViewById<CameraView>(R.id.camera_view)
+//
+//
+//            return root
+//        }
 
 
     }
 
+    fun takePhoto() {
+        createFotoapparat()
+
+        requestPermission()
+
+        fotoapparatState = FotoapparatState.ON
+        fotoapparat?.start()
+        //       Toast.makeText(context, "Test", Toast.LENGTH_LONG).show()
+        var photo = fotoapparat?.takePicture()
+        //      Toast.makeText(context, "After Photo", Toast.LENGTH_SHORT).show()
+        photo?.toBitmap()
+
+            ?.whenAvailable { bitmapPhoto ->
+
+                    post(bitmapPhoto!!.bitmap, clientURL)
+
+            }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val cameraview = view.findViewById<CameraView>(R.id.camera_view)
+    }
+
+    fun CreateFoto() {
+
+        fotoapparat = Fotoapparat(
+            context = GeofenceTransitionsJobIntentService(),
+            view = GeofenceTransitionsJobIntentService.takephoto.onCreateView(
+                LayoutInflater.from(
+                    GeofenceTransitionsJobIntentService()
+                ), container
+            ),
+
+            scaleType = io.fotoapparat.parameter.ScaleType.CenterCrop,
+
+            lensPosition = back(),
+
+            logger = loggers(
+
+                logcat()
+
+            ),
+
+            cameraErrorCallback = { error ->
+
+                println("Recorder errors: $error")
+
+            }
+
+        )
+
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == NEW_REMINDER_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
@@ -181,7 +235,11 @@ class CameraFragment : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerCli
             val reminder = getRepository().getLast()
             map?.moveCamera(CameraUpdateFactory.newLatLngZoom(reminder?.latLng, 15f))
 
-            Toast.makeText(this.requireContext(), R.string.reminder_added_success, Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                this.requireContext(),
+                R.string.reminder_added_success,
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 
@@ -218,7 +276,6 @@ class CameraFragment : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerCli
     private fun showConfigureLocationStep() {
         try {
             connect = CONN(urlGrit, unGrit, passwordGrit)
-            Toast.makeText(this.requireContext(), "passed name", Toast.LENGTH_SHORT).show()
 
             val queryCounty = "SELECT DISTINCT Lat, Long FROM Agency"
 
@@ -241,7 +298,7 @@ class CameraFragment : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerCli
                     radius = 200.00
                 )
                 reminder.latLng = latLng
-                    getRepository().remove()
+                getRepository().remove()
 
             }
 
@@ -275,7 +332,7 @@ class CameraFragment : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerCli
                 addReminder(reminder)
 
             }
-            Toast.makeText(this.requireContext(),"Geofences added", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this.requireContext(), "Geofences added", Toast.LENGTH_SHORT).show()
 
         } catch (e: SQLException) {
             e.printStackTrace()
@@ -307,9 +364,9 @@ class CameraFragment : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerCli
             clear()
             val rep = getRepository().getAll()
 
-                for (reminder in rep) {
-                    showReminderInMap(activity!!.applicationContext, this, reminder)
-                }
+            for (reminder in rep) {
+                showReminderInMap(activity!!.applicationContext, this, reminder)
+            }
 
         }
     }
@@ -356,7 +413,6 @@ class CameraFragment : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerCli
     }
 
 
-
     private fun CONN(
         _user: String, _pass: String, _url: String
     ): Connection? {
@@ -390,12 +446,7 @@ class CameraFragment : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerCli
     //new upload stuff
 
 
-
-
     //var info: String = editText.getText.toString()
-
-
-
 
 
     var fotoapparatState: FotoapparatState? = null
@@ -416,15 +467,11 @@ class CameraFragment : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerCli
     )
 
 
-
-
     private fun createFotoapparat() {
 
 
         fotoapparat = Fotoapparat(
-
-            context = activity!!.applicationContext,
-
+            context = this.requireContext(),
             view = camera_view,
 
             scaleType = io.fotoapparat.parameter.ScaleType.CenterCrop,
@@ -448,26 +495,32 @@ class CameraFragment : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerCli
     }
 
 
-
     override fun onStart() {
 
         super.onStart()
+        EventBus.getDefault().register(this)
 
         //if (hasNoPermissions()) {
 
         createFotoapparat()
 
         requestPermission()
-
-
-
+        val event: GeofencingEvent? = null
+//        if (event?.geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
+//            val reminder = getFirstReminder(event.triggeringGeofences)
+//            val message = reminder?.message
+//            val latLng = reminder?.latLng
+//            fab_camera.performClick()
+//
+//
+//        }
 
 
         fotoapparatState = FotoapparatState.ON
 
         fotoapparat?.start()
 
-        btnSchedule.setOnClickListener {
+        fab_camera.setOnClickListener {
 
             Toast.makeText(context, "Test", Toast.LENGTH_LONG).show()
 
@@ -506,16 +559,13 @@ class CameraFragment : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerCli
         }
 
 
-
-
-
-
-
-
-
-
-
     }
+
+    fun getFirstReminder(triggeringGeofences: List<Geofence>): Reminder? {
+        val firstGeofence = triggeringGeofences[0]
+        return (getActivity()?.application as nav).getRepository().get(firstGeofence.requestId)
+    }
+
 
 //I was working on this
 
@@ -577,7 +627,7 @@ class CameraFragment : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerCli
 
             params.addQueryParameter("password", "@RICsdP4T")
 
-            params.addQueryParameter("id", "444444")
+            params.addQueryParameter("id", "55555")
 
             params.addQueryParameter("latitude", "47.040186")
 
@@ -587,7 +637,7 @@ class CameraFragment : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerCli
 
             params.addQueryParameter("agency", "Ok Client")
 
-            params.addQueryParameter("filename", "444444.jpg")
+            params.addQueryParameter("filename", "55555.jpg")
 
         }
 
@@ -638,9 +688,6 @@ class CameraFragment : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerCli
     }
 
 
-
-
-
     //}
 
     private fun hasNoPermissions(): Boolean {
@@ -678,6 +725,10 @@ class CameraFragment : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerCli
     override fun onStop() {
 
         super.onStop()
+        EventBus.getDefault().unregister(this)
+
+
+
 
         fotoapparat?.stop()
 
@@ -700,6 +751,13 @@ class CameraFragment : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerCli
         }
 
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    fun onEvent(event: TakePhotoEvent) {
+        //EventBus.getDefault().removeStickyEvent(event::class.java)
+        takePhoto()
+    }
+
 
     enum class FotoapparatState {
 
