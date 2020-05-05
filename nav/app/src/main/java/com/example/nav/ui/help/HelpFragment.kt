@@ -27,7 +27,7 @@ class HelpFragment : Fragment() {
             ViewModelProviders.of(this).get(HelpViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_help, container, false)
         val textView: TextView = root.findViewById(R.id.text_help)
-        helpViewModel.text.observe(this, Observer {
+        helpViewModel.text.observe(this.requireActivity(), Observer {
             textView.text = it
         })
         val simpleViewAnimator =
@@ -36,22 +36,16 @@ class HelpFragment : Fragment() {
 
         val btnNext: Button = root.findViewById(R.id.nxt_button) as Button //get the reference of Button
 
-// set Click event on next button
-        // set Click event on next button
         btnNext.setOnClickListener(View.OnClickListener {
             // TODO Auto-generated method stub
-            // show the next view of ViewAnimator
             simpleViewAnimator.showNext()
         })
 
         val btnPrevious =
             root.findViewById(R.id.prv_button) as Button // get the reference of Button
 
-// set Click event on next button
-        // set Click event on next button
         btnPrevious.setOnClickListener {
             // TODO Auto-generated method stub
-            // show the next view of ViewFlipper
             simpleViewAnimator.showPrevious()
         }
         return root
