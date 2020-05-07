@@ -41,7 +41,7 @@ class GeofenceTransitionsJobIntentService() : JobIntentService() {
   private fun handleEvent(event: GeofencingEvent) {
     if (event.geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
       val stickyEvent = EventBus.getDefault().getStickyEvent(TakePhotoEvent::class.java)
-      EventBus.getDefault().postSticky(TakePhotoEvent(event.triggeringGeofences))
+      EventBus.getDefault().postSticky(TakePhotoEvent(event))
     }
   }
 

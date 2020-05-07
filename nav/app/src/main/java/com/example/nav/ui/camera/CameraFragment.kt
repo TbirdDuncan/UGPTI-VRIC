@@ -80,7 +80,7 @@ class CameraFragment : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerCli
     }
 
     @SuppressLint("NewApi")
-    fun takePhoto(siteID : String?){
+    fun takePhoto(siteID : Triple<String?, Double, Double>){
         createFotoapparat()
 
         requestPermission()
@@ -262,7 +262,7 @@ class CameraFragment : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerCli
         fotoapparatState = FotoapparatState.ON
         fotoapparat?.start()
         fab_camera.setOnClickListener {
-            val siteID:String? = null
+            val siteID:Triple<String?, Double, Double>? = null
             val photo = fotoapparat?.takePicture()
             Toast.makeText(context, "Photo Captured", Toast.LENGTH_SHORT).show()
             photo?.toBitmap()
@@ -275,7 +275,7 @@ class CameraFragment : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerCli
     @SuppressLint("NewApi")
     @Throws(IOException::class)
 
-    private fun post(photo: Bitmap, client: OkHttpClient, siteID: String?) {
+    private fun post(photo: Bitmap, client: OkHttpClient, siteID: Triple<String?, Double, Double>?) {
 
         val stream = ByteArrayOutputStream()
 
@@ -294,12 +294,12 @@ class CameraFragment : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerCli
             params.addQueryParameter("username", "RIC")
             params.addQueryParameter("password", "@RICsdP4T")
             params.addQueryParameter("id", current)
-            params.addQueryParameter("latitude", "47.040186")
-            params.addQueryParameter("longitude", "-90")
+            params.addQueryParameter("latitude", siteID?.second.toString())
+            params.addQueryParameter("longitude", siteID?.third.toString())
             params.addQueryParameter("quality", "50")
             params.addQueryParameter("agency", "Ok Client")
             params.addQueryParameter("filename", current + ".jpg")
-            params.addQueryParameter("siteID", siteID)
+            params.addQueryParameter("siteID", siteID?.first)
 
         }
 
